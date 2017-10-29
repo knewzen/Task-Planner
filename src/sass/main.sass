@@ -1,0 +1,86 @@
+@import "../../dist/libs/bulma/sass/utilities/initial-variables.sass"
+
+$turquoise: darken(adjust-hue($turquoise,-20%), 5%)
+$cyan: darken($cyan, 10%)
+$red: adjust-hue($red, 10%)
+$yellow: darken(adjust-hue($yellow, -10%), 20%)
+@import "../../dist/libs/bulma/sass/utilities/functions.sass"
+@import "../../dist/libs/bulma/sass/utilities/derived-variables.sass"
+
+@import "../../dist/libs/bulma/sass/utilities/animations.sass"
+@import "../../dist/libs/bulma/sass/utilities/mixins.sass"
+@import "../../dist/libs/bulma/sass/utilities/controls.sass"
+@import "../../dist/libs/bulma/sass/base/_all"
+@import "../../dist/libs/bulma/sass/elements/_all"
+@import "../../dist/libs/bulma/sass/components/_all"
+@import "../../dist/libs/bulma/sass/grid/_all"
+@import "../../dist/libs/bulma/sass/layout/_all"
+
+body
+  min-height: 100vh
+  background-color: $light
+
+.view
+  min-height: 100vh
+  display: flex
+  flex-direction: column
+  flex-wrap: wrap
+
+.gradient-primary-info
+  background: linear-gradient(140DEG, $primary, $info)
+  .title, .subtitle
+    color: $white
+
+.menu
+  padding: 10px
+  ul
+    display: flex
+    flex-wrap: wrap
+  li
+    margin-right: 10px
+  .label
+    color: $white
+  .select, .select select
+    width: 150px
+
+.tasklist-container
+  min-width: 70%
+  max-width: 1344px
+  margin: 0 auto
+task-list
+  width: 500%
+  flex-grow: 1
+
+.task-tree
+  margin-bottom: 30px
+  border: solid 1px $grey-light
+  border-radius: 5px
+  padding: 10px
+  background-color: $white
+
+.task
+  ul
+    padding-left: 20px
+  .task-content
+    display: inline-block
+    padding: 5px
+    border: solid $dark 1px
+    border-radius: 4px
+    margin-bottom: 5px
+    background: linear-gradient($white, $grey-lighter)
+    position: relative
+  .add-task
+    margin-left: 20px
+
+.status-settings
+  position: absolute
+  top: -108px
+  left: 0
+  flex-direction: column
+  display: flex
+  z-index: 10
+  background-color: $white
+
+.button.is-small.status
+  border-radius: 50%
+  box-shadow: 0 1px 2px 0px $black

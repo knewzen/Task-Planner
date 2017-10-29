@@ -1,0 +1,90 @@
+<!--modals-->
+<div class="modal" ng-class="{'is-active' : main.showDeleteConfirmModal}">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <section class="modal-card-body">
+      <p class="modal-card-title has-text-danger" style="font-weight: bold;">Are you sure you want to delete {{main.taskList.title}} ?</p>
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-primary is-large" ng-click="main.deleteConfirm()">
+        <span class="icon is-medium">
+          <i class="fa fa-check"></i>
+        </span>
+        <span>Yes</span>
+      </button>
+      <button class="button is-danger is-large" ng-click="main.showDeleteConfirmModal = false">
+        <span class="icon is-medium">
+          <i class="fa fa-times"></i>
+        </span>
+        <span>No</span>
+      </button>
+    </footer>
+  </div>
+</div>
+
+<div class="modal" ng-class="{'is-active' : main.showUnsavedChangesModal}">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <section class="modal-card-body">
+      <p class="modal-card-title has-text-danger" style="font-weight: bold;">You have some unsavedChanges ! Would you like to save them before starting a new project?</p>
+    </section>
+    <footer class="modal-card-foot">
+      <button class="button is-primary is-large"
+              ng-click="main.save();main.newProject();main.showUnsavedChangesModal = false">
+        <span class="icon is-medium">
+          <i class="fa fa-floppy-o"></i>
+        </span>
+        <span>Yes</span>
+      </button>
+      <button class="button is-primary is-large"
+              ng-click="main.newProject();;main.showUnsavedChangesModal = false">
+        <span class="icon is-medium">
+          <span class="fa-stack">
+            <i class="fa fa-floppy-o fa-stack-1x"></i>
+            <i class="fa fa-ban fa-stack-2x has-text-danger"></i>
+          </span>
+        </span>
+        <span>No</span>
+      </button>
+      <button class="button is-large is-danger" ng-click="main.showUnsavedChangesModal = false">
+        <span class="icon is-medium">
+          <i class="fa fa-times"></i>
+        </span>
+        <span>Cancel</span>
+      </button>
+    </footer>
+  </div>
+</div>
+
+<!-- view-->
+<div class="view">
+  <header class="hero gradient-primary-info">
+    <div class="hero-body">
+      <div class="container">
+        <h1 class="title">
+          TaskPlanner!
+        </h1>
+        <h2 class="subtitle">
+          Create and Manage your projects schedules
+        </h2>
+      </div>
+    </div>
+  </header>
+  <br>
+  <menu-component task-lists="main.taskLists"
+                  select-task-list="main.selectTaskList(tasklist)"
+                  new-project="main.checkUnsavedChanges()"
+                  delete-project="main.deleteProject()"></menu-component>
+  <br>
+  <div class="tasklist-container">
+    <task-list task-list="main.taskList" unsaved-changes="main.unsavedChanges"></task-list>
+    <button ng-if="main.isTaskListSelected()" class="button is-large is-primary" ng-click="main.save()">
+      <span class="icon is-medium">
+        <i class="fa fa-floppy-o"></i>
+      </span>
+    </button>
+    <div class="has-text-primary" ng-if="main.changesSaved">
+      Changes saved !
+    </div>
+  </div>
+</div>

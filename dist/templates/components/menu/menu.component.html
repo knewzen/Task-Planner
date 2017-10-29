@@ -1,0 +1,41 @@
+<nav class="menu">
+  <ul class="container">
+    <li>
+      <div class="field has-addons">
+        <div class="control">
+          <div class="select is-primary">
+            <select ng-model="menu.selectedTaskList"
+                    ng-init="menu.selectedTaskList='default'"
+                    ng-options="tl as tl.title for tl in menu.taskLists">
+            </select>
+          </div>
+        </div>
+        <div class="control">
+          <button class="button is-primary"
+                  ng-click="menu.selectTaskList({tasklist:menu.selectedTaskList})">
+            <span class="icon is-medium">
+              <i class="fa fa-pencil fa-lg"></i>
+            </span>
+            <span>Select Project</span>
+          </button>
+        </div>
+      </div>
+    </li>
+    <li>
+      <button class="button is-info" ng-click="menu.newProject()">
+        <span class="icon is-medium">
+          <i class="fa fa-plus fa-lg"></i>
+        </span>
+        <span>Add Project</span>
+      </button>
+    </li>
+    <li>
+      <button class="button is-danger" ng-click="menu.deleteProject()">
+        <span class="icon is-medium">
+          <i class="fa fa-trash-o fa-lg"></i>
+        </span>
+        <span>Delete Project</span>
+      </button>
+    </li>
+  </ul>
+</nav>

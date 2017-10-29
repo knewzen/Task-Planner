@@ -1,0 +1,24 @@
+{
+  "name": "TaskPlanner",
+  "authors": [
+    "Daria <lo.pennequin@gmail.com>"
+  ],
+  "description": "task planner app",
+  "main": "app.js",
+  "license": "MIT",
+  "homepage": "index.html",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.6.6",
+    "jquery": "^3.2.1",
+    "bulma": "^0.6.0",
+    "angular-animate": "^1.6.6",
+    "angular-local-storage": "^0.7.1"
+  }
+}

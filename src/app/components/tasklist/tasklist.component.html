@@ -1,0 +1,40 @@
+<main>
+  <div ng-if="!tl.isTaskListSelected()">
+    <h2 class="title is-4">Please select a project using the dropdown menu above.</h2>
+  </div>
+  <div ng-if="tl.isTaskListSelected()">
+    <h2 class="title is-4" ng-if="!tl.showEditTitle">
+      <span>{{tl.taskList.title}}</span>
+      <button class="button is-primary" ng-click="tl.showEditTitle = !tl.showEditTitle">
+        <span class="icon is-medium">
+          <i class="fa fa-pencil"></i>
+        </span>
+      </button>
+    </h2>
+    <form class="title is-4" ng-if="tl.showEditTitle" ng-submit="tl.showEditTitle = !tl.showEditTitle">
+      <input class="input" type="text" ng-model="tl.taskList.title" ng-change="tl.unsavedChanges.state = true">
+    </form>
+
+    <ul class="task-tree is-clearfix">
+      <button class="button is-primary is-pulled-right" ng-click="tl.editMode = !tl.editMode">
+        <span class="icon is-medium">
+          <i class="fa fa-pencil"></i>
+        </span>
+      </button>
+
+      <task task="task" tasks="tl.taskList" edit-mode="tl.editMode"
+            on-add-task="tl.newTask(data)"
+            on-delete-task="tl.deleteTask(data)"
+            unsaved-changes="tl.unsavedChanges"
+            ng-repeat="task in tl.taskList.tasks" ng-if="task.is_child === false"></task>
+
+      <button class="button is-small add-task" ng-if="tl.editMode === true" ng-click="tl.newTask({isChild:false})">
+        <span class="icon">
+          <i class="fa fa-long-arrow-right"></i>
+        </span>
+        <span>Add a task</span>
+      </button>
+
+    </ul>
+  </div>
+</main>
