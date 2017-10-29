@@ -6,14 +6,240 @@
     <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/main.css">
+    <!--app-->
     <script src="libs/jquery/dist/jquery.min.js"></script>
     <script src="libs/angular/angular.min.js"></script>
     <script src="libs/angular-animate/angular-animate.min.js"></script>
     <script src="libs/angular-local-storage/dist/angular-local-storage.min.js"></script>
     <script src="js/app.js"></script>
+
     <title>Task Manager</title>
   </head>
   <body ng-app="taskPlanner">
+
+    <!--templates-->
+    <script type="text/ng-template" id="templates/components/main/main.component.html" >
+      <!--modals-->
+      <div class="modal" ng-class="{'is-active' : main.showDeleteConfirmModal}">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+          <section class="modal-card-body">
+            <p class="modal-card-title has-text-danger" style="font-weight: bold;">Are you sure you want to delete {{main.taskList.title}} ?</p>
+          </section>
+          <footer class="modal-card-foot">
+            <button class="button is-primary is-large" ng-click="main.deleteConfirm()">
+              <span class="icon is-medium">
+                <i class="fa fa-check"></i>
+              </span>
+              <span>Yes</span>
+            </button>
+            <button class="button is-danger is-large" ng-click="main.showDeleteConfirmModal = false">
+              <span class="icon is-medium">
+                <i class="fa fa-times"></i>
+              </span>
+              <span>No</span>
+            </button>
+          </footer>
+        </div>
+      </div>
+
+      <div class="modal" ng-class="{'is-active' : main.showUnsavedChangesModal}">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+          <section class="modal-card-body">
+            <p class="modal-card-title has-text-danger" style="font-weight: bold;">You have some unsavedChanges ! Would you like to save them before starting a new project?</p>
+          </section>
+          <footer class="modal-card-foot">
+            <button class="button is-primary is-large"
+            ng-click="main.save();main.newProject();main.showUnsavedChangesModal = false">
+            <span class="icon is-medium">
+              <i class="fa fa-floppy-o"></i>
+            </span>
+            <span>Yes</span>
+          </button>
+          <button class="button is-primary is-large"
+          ng-click="main.newProject();;main.showUnsavedChangesModal = false">
+          <span class="icon is-medium">
+            <span class="fa-stack">
+              <i class="fa fa-floppy-o fa-stack-1x"></i>
+              <i class="fa fa-ban fa-stack-2x has-text-danger"></i>
+            </span>
+          </span>
+          <span>No</span>
+        </button>
+        <button class="button is-large is-danger" ng-click="main.showUnsavedChangesModal = false">
+          <span class="icon is-medium">
+            <i class="fa fa-times"></i>
+          </span>
+          <span>Cancel</span>
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- view-->
+  <div class="view">
+    <header class="hero gradient-primary-info">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">
+            TaskPlanner!
+          </h1>
+          <h2 class="subtitle">
+            Create and Manage your projects schedules
+          </h2>
+        </div>
+      </div>
+    </header>
+    <br>
+    <menu-component task-lists="main.taskLists"
+    select-task-list="main.selectTaskList(tasklist)"
+    new-project="main.checkUnsavedChanges()"
+    delete-project="main.deleteProject()"></menu-component>
+    <br>
+    <div class="tasklist-container">
+      <task-list task-list="main.taskList" unsaved-changes="main.unsavedChanges"></task-list>
+      <button ng-if="main.isTaskListSelected()" class="button is-large is-primary" ng-click="main.save()">
+        <span class="icon is-medium">
+          <i class="fa fa-floppy-o"></i>
+        </span>
+      </button>
+      <div class="has-text-primary" ng-if="main.changesSaved">
+        Changes saved !
+      </div>
+    </div>
+  </div>
+</script>
+    <script type="text/ng-template" id="templates/components/menu/menu.component.html" >
+  <nav class="menu">
+    <ul class="container">
+      <li>
+        <div class="field has-addons">
+          <div class="control">
+            <div class="select is-primary">
+              <select ng-model="menu.selectedTaskList"
+              ng-init="menu.selectedTaskList='default'"
+              ng-options="tl as tl.title for tl in menu.taskLists">
+            </select>
+          </div>
+        </div>
+        <div class="control">
+          <button class="button is-primary"
+          ng-click="menu.selectTaskList({tasklist:menu.selectedTaskList})">
+          <span class="icon is-medium">
+            <i class="fa fa-pencil fa-lg"></i>
+          </span>
+          <span>Select Project</span>
+        </button>
+      </div>
+    </div>
+  </li>
+  <li>
+    <button class="button is-info" ng-click="menu.newProject()">
+      <span class="icon is-medium">
+        <i class="fa fa-plus fa-lg"></i>
+      </span>
+      <span>Add Project</span>
+    </button>
+  </li>
+  <li>
+    <button class="button is-danger" ng-click="menu.deleteProject()">
+      <span class="icon is-medium">
+        <i class="fa fa-trash-o fa-lg"></i>
+      </span>
+      <span>Delete Project</span>
+    </button>
+  </li>
+</ul>
+</nav>
+</script>
+    <script type="text/ng-template" id="templates/components/tasklist/tasklist.component.html">
+  <main>
+    <div ng-if="!tl.isTaskListSelected()">
+      <h2 class="title is-4">Please select a project using the dropdown menu above.</h2>
+    </div>
+    <div ng-if="tl.isTaskListSelected()">
+      <h2 class="title is-4" ng-if="!tl.showEditTitle">
+        <span>{{tl.taskList.title}}</span>
+        <button class="button is-primary" ng-click="tl.showEditTitle = !tl.showEditTitle">
+          <span class="icon is-medium">
+            <i class="fa fa-pencil"></i>
+          </span>
+        </button>
+      </h2>
+      <form class="title is-4" ng-if="tl.showEditTitle" ng-submit="tl.showEditTitle = !tl.showEditTitle">
+        <input class="input" type="text" ng-model="tl.taskList.title" ng-change="tl.unsavedChanges.state = true">
+      </form>
+
+      <ul class="task-tree is-clearfix">
+        <button class="button is-primary is-pulled-right" ng-click="tl.editMode = !tl.editMode">
+          <span class="icon is-medium">
+            <i class="fa fa-pencil"></i>
+          </span>
+        </button>
+
+        <task task="task" tasks="tl.taskList" edit-mode="tl.editMode"
+        on-add-task="tl.newTask(data)"
+        on-delete-task="tl.deleteTask(data)"
+        unsaved-changes="tl.unsavedChanges"
+        ng-repeat="task in tl.taskList.tasks" ng-if="task.is_child === false"></task>
+
+        <button class="button is-small add-task" ng-if="tl.editMode === true" ng-click="tl.newTask({isChild:false})">
+          <span class="icon">
+            <i class="fa fa-long-arrow-right"></i>
+          </span>
+          <span>Add a task</span>
+        </button>
+
+      </ul>
+    </div>
+  </main>
+</script>
+    <script type="text/ng-template" id="templates/components/task/task.component.html" >
+  <main>
+    <div ng-if="!tl.isTaskListSelected()">
+      <h2 class="title is-4">Please select a project using the dropdown menu above.</h2>
+    </div>
+    <div ng-if="tl.isTaskListSelected()">
+      <h2 class="title is-4" ng-if="!tl.showEditTitle">
+        <span>{{tl.taskList.title}}</span>
+        <button class="button is-primary" ng-click="tl.showEditTitle = !tl.showEditTitle">
+          <span class="icon is-medium">
+            <i class="fa fa-pencil"></i>
+          </span>
+        </button>
+      </h2>
+      <form class="title is-4" ng-if="tl.showEditTitle" ng-submit="tl.showEditTitle = !tl.showEditTitle">
+        <input class="input" type="text" ng-model="tl.taskList.title" ng-change="tl.unsavedChanges.state = true">
+      </form>
+
+      <ul class="task-tree is-clearfix">
+        <button class="button is-primary is-pulled-right" ng-click="tl.editMode = !tl.editMode">
+          <span class="icon is-medium">
+            <i class="fa fa-pencil"></i>
+          </span>
+        </button>
+
+        <task task="task" tasks="tl.taskList" edit-mode="tl.editMode"
+        on-add-task="tl.newTask(data)"
+        on-delete-task="tl.deleteTask(data)"
+        unsaved-changes="tl.unsavedChanges"
+        ng-repeat="task in tl.taskList.tasks" ng-if="task.is_child === false"></task>
+
+        <button class="button is-small add-task" ng-if="tl.editMode === true" ng-click="tl.newTask({isChild:false})">
+          <span class="icon">
+            <i class="fa fa-long-arrow-right"></i>
+          </span>
+          <span>Add a task</span>
+        </button>
+
+      </ul>
+    </div>
+  </main>
+</script>
+
+    <!-- view-->
     <main-component></main-component>
+    
   </body>
 </html>
